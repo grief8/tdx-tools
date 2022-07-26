@@ -252,15 +252,17 @@ class VMMLibvirt(VMMBase):
         """
         assert self._virt_conn is not None
         self._xml.dump()
+        tstart = time.perf_counter()
         domain = self._virt_conn.defineXML(self._xml.tostring())
         domain.create()
+        LOG.info("Create VM (duration: %s ms)", (time.perf_counter() - tstart)*1000)
 
     def destroy(self):
         """
         Destroy a VM.
         Table of Contents:https://libvirt.org/html/libvirt-libvirt-domain.html
         """
-
+        tstart = time.perf_counter()
         try:
             dom = self._get_domain()
         except libvirt.libvirtError:
@@ -277,7 +279,7 @@ class VMMLibvirt(VMMBase):
                     dom.undefineFlags(libvirt.VIR_DOMAIN_UNDEFINE_NVRAM)
                 except libvirt.libvirtError:
                     LOG.warning("Unable to undefine the domain %s", self._xml.name)
-
+        LOG.info("Destroy VM (duration: %s ms)", (time.perf_counter() - tstart)*1000)
         # Delete XML file
         if os.path.exists(self._xml.filepath):
             try:
@@ -300,39 +302,48 @@ class VMMLibvirt(VMMBase):
         """
         Start a VM if VM is not started.
         """
+        tstart = time.perf_counter()
         if self.is_shutoff():
             dom = self._get_domain()
             dom.create()
         else:
             self.resume()
+        LOG.info("Start VM (duration: %s ms)", (time.perf_counter() - tstart)*1000)
 
     def suspend(self):
         """
         Suspend a VM if VM is running
         """
+        tstart = time.perf_counter()
         dom = self._get_domain()
         if self.is_running():
             dom.suspend()
+        LOG.info("Suspend VM (duration: %s ms)", (time.perf_counter() - tstart)*1000)
 
     def resume(self):
         """
         Resume a VM if VM is stopped/paused
         """
+        tstart = time.perf_counter()
         dom = self._get_domain()
         if not self.is_running():
             dom.resume()
+        LOG.info("Resume VM (duration: %s ms)", (time.perf_counter() - tstart)*1000)
 
     def reboot(self):
         """
         Reboot a VM.
         """
+        tstart = time.perf_counter()
         dom = self._get_domain()
         dom.reboot()
+        LOG.info("Reboot VM (duration: %s ms)", (time.perf_counter() - tstart)*1000)
 
     def shutdown(self, mode=None):
         """
         Shutdown a VM.
         """
+        tstart = time.perf_counter()
         dom = self._get_domain()
         if mode is None:
             dom.shutdown()
@@ -342,6 +353,7 @@ class VMMLibvirt(VMMBase):
             dom.shutdownFlags(libvirt.VIR_DOMAIN_SHUTDOWN_ACPI_POWER_BTN)
         elif mode == "agent":
             dom.shutdownFlags(libvirt.VIR_DOMAIN_SHUTDOWN_GUEST_AGENT)
+        LOG.info("Shutdown VM (duration: %s ms)", (time.perf_counter() - tstart)*1000)
 
     def is_running(self):
         """

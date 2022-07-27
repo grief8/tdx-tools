@@ -385,6 +385,8 @@ class VMGuestFactory:
         if auto_start:
             inst.create()
             inst.start()
+        else:
+            inst.create()
 
         return inst
 

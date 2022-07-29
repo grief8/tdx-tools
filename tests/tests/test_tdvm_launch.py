@@ -34,8 +34,8 @@ def test_tdvm_lifecycle_virsh(vm_factory):
     Step 6: Start TD guest and check whether status is running
     """
 
-    cpus = [i for i in range(4, 64, 4)]
-    memsize = [i for i in range(4, 128, 8)]
+    cpus = [i for i in range(24, 64, 4)]
+    memsize = [i for i in range(4, 52, 8)]
     for cores in cpus:
         for mem in memsize:
             for _ in range(20):

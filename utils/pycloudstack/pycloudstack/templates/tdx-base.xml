@@ -66,4 +66,12 @@
     <qemu:arg value='-cpu'/>
     <qemu:arg value='host'/>
   </qemu:commandline>
+  <qemu:commandline>
+    <qemu:arg value='-machine'/>
+    <qemu:arg value='kvm-type=tdx,confidential-guest-support=tdx'/>
+  </qemu:commandline>
+  <qemu:commandline>
+    <qemu:arg value='-object'/>
+    <qemu:arg value='tdx-guest,id=tdx'/>
+  </qemu:commandline>
 </domain>
